@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Requests\MakerRequest;
 use App\Models\Maker;
+use Illuminate\Support\Facades\File;
 
 class MakerController extends Controller
 {
@@ -37,16 +38,17 @@ class MakerController extends Controller
      */
     public function store(MakerRequest $request)
     {
-       
+      
         $maker  = new Maker();
         $maker->name = $request->input('name');
-
-        $logo = $request->file('logo');
-        $logoName = $maker->name.'.png';
-        $logo->move(public_path('logos'), $logoName);
-        $maker->logo = $logoName;
-        
+        $logo = $request['logo'];
+        //$logo = $request->file('logo');
+        //$path = $request->file('logo')->store(public_path('logos'));
+        //File::move(public_path('logos'), $logo);
+        $maker->logo = $logo;
+        //$maker->create($request->all());
         $maker->save();
+
  
         return redirect()->route('makers.index')->with('success', "{$maker->name} sikeresen létrehozva");
     }
@@ -82,11 +84,12 @@ class MakerController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(MakerRequest $request, $id)
     {
         //$request->validate($this->getNameValidationRules());
         $maker  = Maker::find($id);
         $maker->name = $request->input('name');
+        $maker->update($request->all());
         $maker->save();
 
         return redirect()->route('makers.index')->with('success', "{$maker->name} sikeresen módosítva");
