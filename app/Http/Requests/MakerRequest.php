@@ -23,15 +23,20 @@ class MakerRequest extends FormRequest
      */
     public function rules()
     {
+        if ($this->method() === 'PATCH') {
+            return ['name' => 'nullable|min:3|max:255'];
+        }
         return [
-            'name' => 'required|min:2|max:255',
+            'name' => 'required|min:3|max:255',
         ];
     }
 
     public function messages()
     {
         return [
-            'name.min' => 'A kategória neve legalább 2 karakter hosszú legyen.',
+            'name.required' => 'Kötelező mező!',
+            'name.min' => 'Legalább 3 karakter legyen!',
+            'name.max' => 'Legfeljebb 255 karakter legyen!',
         ];
     }
 }
